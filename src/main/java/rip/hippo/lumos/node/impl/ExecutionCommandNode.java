@@ -48,4 +48,9 @@ public final class ExecutionCommandNode implements CommandNode {
   public void setSuggestionNode(SuggestionNode suggestionNode) {
     throw new UnsupportedOperationException();
   }
+
+  @Override
+  public String toString() {
+    return "ExecutionCommandNode{}";
+  }
 }

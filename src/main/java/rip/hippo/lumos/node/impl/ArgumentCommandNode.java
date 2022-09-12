@@ -26,4 +26,11 @@ public final class ArgumentCommandNode<T> extends AbstractCommandNode {
   public String getKey() {
     return key;
   }
+
+  @Override
+  public String toString() {
+    return "ArgumentCommandNode{" +
+        "key='" + key + '\'' +
+        '}';
+  }
 }

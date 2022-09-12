@@ -11,6 +11,9 @@ import java.util.List;
  * @author Hippo
  */
 public interface CommandTree extends CommandNode {
+
+  List<CommandNode> getChildrenDeep();
+
   static CommandTree of(CommandTreeBuilder... builders) {
     List<CommandNode> nodes = new LinkedList<>();
     for (CommandTreeBuilder builder : builders) {

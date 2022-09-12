@@ -66,4 +66,13 @@ public final class LabelCommandNode extends AbstractCommandNode {
   public String[] getAliases() {
     return aliases;
   }
+
+  @Override
+  public String toString() {
+    return "LabelCommandNode{" +
+        "ignoreCase=" + ignoreCase +
+        ", label='" + label + '\'' +
+        ", aliases=" + Arrays.toString(aliases) +
+        '}';
+  }
 }

@@ -30,6 +30,10 @@ public final class CommandTreeBuilder {
     this.commandNode = new ExecutionCommandNode(consumer);
   }
 
+  public CommandTreeBuilder accept(Consumer<CommandTreeBuilder> consumer) {
+    consumer.accept(this);
+    return this;
+  }
 
   public CommandTreeBuilder then(CommandTreeBuilder commandTreeBuilder) {
     commandNode.addChild(commandTreeBuilder.commandNode);
@@ -39,6 +43,66 @@ public final class CommandTreeBuilder {
   public CommandTreeBuilder suggest(SuggestionNode suggestionNode) {
     commandNode.setSuggestionNode(suggestionNode);
     return this;
+  }
+
+  public CommandTreeBuilder execute(Consumer<CommandContext> consumer) {
+    CommandTreeBuilder builder = CommandNode.execute(consumer);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder label(boolean ignoreCase, String label, String... aliases) {
+    CommandTreeBuilder builder = CommandNode.label(ignoreCase, label, aliases);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder label(String label, String... aliases) {
+    CommandTreeBuilder builder = CommandNode.label(label, aliases);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder string(String key, boolean endless) {
+    CommandTreeBuilder builder = CommandNode.string(key, endless);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder string(String key) {
+    CommandTreeBuilder builder = CommandNode.string(key);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder bool(String key) {
+    CommandTreeBuilder builder = CommandNode.bool(key);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder integer(String key) {
+    CommandTreeBuilder builder = CommandNode.integer(key);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder floating(String key) {
+    CommandTreeBuilder builder = CommandNode.floating(key);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder longInteger(String key) {
+    CommandTreeBuilder builder = CommandNode.longInteger(key);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder parseArgument(String key, Function<BufferedArguments, ?> function) {
+    CommandTreeBuilder builder = CommandNode.parseArgument(key, function);
+    then(builder);
+    return builder;
   }
 
   public CommandNode build() {

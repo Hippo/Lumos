@@ -12,7 +12,7 @@ Then:
 
 ```kotlin
 dependencies {
-    implementation("rip.hippo:Lumos:2.0.0")
+    implementation("rip.hippo:Lumos:2.0.1")
 }
 ```
 
@@ -27,13 +27,31 @@ Then register a command:
 ```java
 commandDispatcher.register("test command", CommandTree.of(
     CommandNode.label("count").then(CommandNode.integer("arg").then(CommandNode.execute(context -> {
-      Integer arg = context.get("arg", Integer.class);
-      for (int i = 0; i < arg; i++) {
-        System.out.println("Counting: " + i);
-      }
-    })))
+    int arg = context.parseInt("arg");
+    for (int i = 0; i < arg; i++) {
+      System.out.println("Counting: " + i);
+    }
+  })))
 ));
 ```
+
+You could also implement the Command like this, which may be easier to manage for larger commands:
+```java
+commandDispatcher.register("test command", CommandTree.of(
+  CommandNode.label("count").accept(builder -> {
+    builder.integer("arg").accept(subBuilder -> {
+      subBuilder.execute(context -> {
+        int arg = context.parseInt("arg");
+        for (int i = 0; i < arg; i++) {
+          System.out.println("Counting: " + i);
+        }
+      });
+    });
+  })
+));
+```
+
+You are able to you `accept` and `then` interchangeably.
 
 Then execute the command:
 ```java

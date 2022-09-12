@@ -20,32 +20,40 @@ public final class CommandTest {
     CommandDispatcher commandDispatcher = CommandDispatcher.create();
 
     commandDispatcher.register("my command", CommandTree.of(
-        CommandNode.label("label", "my alias").suggest(SuggestionNode.ofLabel())
-            .then(CommandNode.label("sublabel").suggest(SuggestionNode.ofLabel())
-                    .then(CommandNode.bool("bool_value")
-                        .then(CommandNode.execute(context -> System.out.println("Sub label context: " + context.get("bool_value")))))
-            ).then(CommandNode.string("string_value").suggest(SuggestionNode.ofArgument(String.class, (node, input) -> Collections.singletonList("<value>")))
-                .then(CommandNode.execute(context -> System.out.println("Label context: " + context.get("string_value"))))),
+        CommandNode.label("label", "my alias").accept(builder -> {
+          builder.suggest(SuggestionNode.ofLabel());
 
+          builder.label("sublabel").accept(subBuilder -> {
+            subBuilder.suggest(SuggestionNode.ofLabel());
+            subBuilder.bool("bool_value")
+                .accept(argBuilder -> argBuilder
+                    .execute(context -> System.out.println("Sub label context: " + context.parseBoolean("bool_value"))));
+          });
 
-        CommandNode.label("other label")
-            .then(CommandNode.parseArgument("uuid", bufferedArguments -> {
-              if (bufferedArguments.hasNext()) {
-                return UUID.fromString(bufferedArguments.next());
-              }
-              return null;
-            }).then(CommandNode.execute(context -> System.out.println("UUID: " + context.get("uuid"))))),
+          builder.string("string_value").accept(subBuilder -> {
+            subBuilder.suggest(SuggestionNode.ofArgument(String.class, (node, input) -> Collections.singletonList("<value>")));
 
+            subBuilder.execute(context -> System.out.println("Label context: " + context.parseString("string_value")));
+          });
+        }),
+
+        CommandNode.label("other label").accept(builder -> {
+          builder.parseArgument("uuid", bufferedArguments -> {
+            if (bufferedArguments.hasNext()) {
+              return UUID.fromString(bufferedArguments.next());
+            }
+            return null;
+          }).then(CommandNode.execute(context -> System.out.println("UUID: " + context.get("uuid"))));
+        }),
 
         CommandNode.label("exec label")
-                .then(CommandNode.execute(context -> System.out.println("Label execution"))),
+            .then(CommandNode.execute(context -> System.out.println("Label execution"))),
 
-
-        CommandNode.label("val")
-            .then(CommandNode.integer("int_value")
-                .then(CommandNode.label("post")
-                    .then(CommandNode.execute(context -> System.out.println("Int value: " + context.get("int_value")))))),
-        CommandNode.execute(context -> System.out.println("Fallback execution"))
+        CommandNode.label("val").accept(builder -> {
+          builder.integer("int_value").accept(intBuilder -> {
+            intBuilder.label("post").then(CommandNode.execute(context -> System.out.println("Int value: " + context.get("int_value"))));
+          });
+        })
     ));
 
 

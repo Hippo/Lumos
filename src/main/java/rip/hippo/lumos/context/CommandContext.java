@@ -26,6 +26,42 @@ public final class CommandContext {
     return parent.cast(argumentMap.get(key));
   }
 
+  public int parseInt(String key) {
+    return get(key, Integer.class);
+  }
+
+  public long parseLong(String key) {
+    return get(key, Long.class);
+  }
+
+  public double parseDouble(String key) {
+    return get(key, Double.class);
+  }
+
+  public float parseFloat(String key) {
+    return get(key, Float.class);
+  }
+
+  public boolean parseBoolean(String key) {
+    return get(key, Boolean.class);
+  }
+
+  public String parseString(String key) {
+    return get(key, String.class);
+  }
+
+  public char parseChar(String key) {
+    return get(key, Character.class);
+  }
+
+  public byte parseByte(String key) {
+    return get(key, Byte.class);
+  }
+
+  public short parseShort(String key) {
+    return get(key, Short.class);
+  }
+
   public void put(String key, Object value) {
     argumentMap.put(key, value);
   }
