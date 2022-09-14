@@ -23,8 +23,7 @@ public final class CommandTest {
         CommandNode.label("label", "my alias").accept(builder -> {
           builder.suggest(SuggestionNode.ofLabel());
 
-          builder.label("sublabel").accept(subBuilder -> {
-            subBuilder.suggest(SuggestionNode.ofLabel());
+          builder.label(true, "sublabel").accept(subBuilder -> { // You can just pass true to provide the default suggestion for labels (SuggestionNode.ofLabel())
             subBuilder.bool("bool_value")
                 .accept(argBuilder -> argBuilder
                     .execute(context -> System.out.println("Sub label context: " + context.parseBoolean("bool_value"))));

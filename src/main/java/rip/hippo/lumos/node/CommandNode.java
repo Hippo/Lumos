@@ -24,12 +24,16 @@ public interface CommandNode {
     return new CommandTreeBuilder(consumer);
   }
 
-  static CommandTreeBuilder label(boolean ignoreCase, String label, String... aliases) {
-    return new CommandTreeBuilder(ignoreCase, label, aliases);
+  static CommandTreeBuilder label(boolean ignoreCase, boolean defaultSuggestion, String label, String... aliases) {
+    return new CommandTreeBuilder(ignoreCase, defaultSuggestion, label, aliases);
+  }
+
+  static CommandTreeBuilder label(boolean defaultSuggestion, String label, String... aliases) {
+    return new CommandTreeBuilder(true, defaultSuggestion, label, aliases);
   }
 
   static CommandTreeBuilder label(String label, String... aliases) {
-    return new CommandTreeBuilder(true, label, aliases);
+    return new CommandTreeBuilder(true, true, label, aliases);
   }
 
   static CommandTreeBuilder string(String key, boolean endless) {

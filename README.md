@@ -12,7 +12,7 @@ Then:
 
 ```kotlin
 dependencies {
-    implementation("rip.hippo:Lumos:2.0.1")
+    implementation("rip.hippo:Lumos:2.0.2")
 }
 ```
 

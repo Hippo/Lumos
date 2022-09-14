@@ -18,8 +18,11 @@ public final class CommandTreeBuilder {
 
   private final CommandNode commandNode;
 
-  public CommandTreeBuilder(boolean ignoreCase, String label, String... aliases) {
+  public CommandTreeBuilder(boolean ignoreCase, boolean defaultSuggestion, String label, String... aliases) {
     this.commandNode = new LabelCommandNode(ignoreCase, label, aliases);
+    if (defaultSuggestion) {
+      this.commandNode.setSuggestionNode(SuggestionNode.ofLabel());
+    }
   }
 
   public CommandTreeBuilder(String key, Function<BufferedArguments, ?> function) {
@@ -51,8 +54,14 @@ public final class CommandTreeBuilder {
     return builder;
   }
 
-  public CommandTreeBuilder label(boolean ignoreCase, String label, String... aliases) {
-    CommandTreeBuilder builder = CommandNode.label(ignoreCase, label, aliases);
+  public CommandTreeBuilder label(boolean ignoreCase, boolean defaultSuggestion, String label, String... aliases) {
+    CommandTreeBuilder builder = CommandNode.label(ignoreCase, defaultSuggestion, label, aliases);
+    then(builder);
+    return builder;
+  }
+
+  public CommandTreeBuilder label(boolean defaultSuggestion, String label, String... aliases) {
+    CommandTreeBuilder builder = CommandNode.label(defaultSuggestion, label, aliases);
     then(builder);
     return builder;
   }
