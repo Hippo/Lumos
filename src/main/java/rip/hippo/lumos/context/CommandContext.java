@@ -1,5 +1,7 @@
 package rip.hippo.lumos.context;
 
+import rip.hippo.lumos.broker.CommandBroker;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,7 +10,21 @@ import java.util.Map;
  */
 public final class CommandContext {
 
-  private final Map<String, Object> argumentMap = new HashMap<>();
+  private final CommandBroker commandBroker;
+  private final Map<String, Object> argumentMap;
+
+  public CommandContext(CommandBroker commandBroker) {
+    this.commandBroker = commandBroker;
+    this.argumentMap = new HashMap<>();
+  }
+
+  public CommandContext() {
+    this(null);
+  }
+
+  public CommandBroker getCommandBroker() {
+    return commandBroker;
+  }
 
   public boolean has(String key) {
     return argumentMap.containsKey(key);

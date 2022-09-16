@@ -2,6 +2,7 @@ package rip.hippo.lumos.impl;
 
 import rip.hippo.lumos.CommandDispatcher;
 import rip.hippo.lumos.CommandTree;
+import rip.hippo.lumos.broker.CommandBroker;
 import rip.hippo.lumos.context.CommandContext;
 import rip.hippo.lumos.data.BufferedArguments;
 import rip.hippo.lumos.node.CommandNode;
@@ -31,16 +32,26 @@ public final class StandardCommandDispatcher implements CommandDispatcher {
 
   @Override
   public boolean dispatch(String command, BufferedArguments bufferedArguments) {
+    return dispatch(null, command, bufferedArguments);
+  }
+
+  @Override
+  public boolean dispatch(CommandBroker commandBroker, String command, BufferedArguments bufferedArguments) {
     CommandTree commandTree = commandMap.get(command);
     if (commandTree == null) {
       return false;
     }
-    CommandContext commandContext = new CommandContext();
+    CommandContext commandContext = new CommandContext(commandBroker);
     return handle(commandTree, bufferedArguments, commandContext);
   }
 
   @Override
   public List<String> getSuggestions(String command, BufferedArguments bufferedArguments) {
+    return getSuggestions(null, command, bufferedArguments);
+  }
+
+  @Override
+  public List<String> getSuggestions(CommandBroker commandBroker, String command, BufferedArguments bufferedArguments) {
     CommandTree commandTree = commandMap.get(command);
     List<String> suggestions = new LinkedList<>();
     if (commandTree == null) {
@@ -49,7 +60,7 @@ public final class StandardCommandDispatcher implements CommandDispatcher {
     String[] arguments = bufferedArguments.getArguments();
     if (arguments.length == 0) {
       for (CommandNode child : commandTree.getChildren()) {
-        child.getSuggestionNode().ifPresent(node -> suggestions.addAll(node.getSuggestions(child, "")));
+        child.getSuggestionNode().ifPresent(node -> suggestions.addAll(node.getSuggestions(commandBroker, child, "")));
       }
     }
 
@@ -57,7 +68,7 @@ public final class StandardCommandDispatcher implements CommandDispatcher {
     CommandNode commandNode = handleSuggestions(commandTree, completeArguments);
     if (commandNode != null) {
       for (CommandNode child : commandNode.getChildren()) {
-        child.getSuggestionNode().ifPresent(node -> suggestions.addAll(node.getSuggestions(child, arguments[arguments.length - 1])));
+        child.getSuggestionNode().ifPresent(node -> suggestions.addAll(node.getSuggestions(commandBroker, child, arguments[arguments.length - 1])));
       }
     }
 
